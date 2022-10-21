@@ -1,8 +1,26 @@
+<?php
+session_start();
+require 'functions.php';
+
+if (is_not_logged_in()) {
+  redirect_to('page_login.php');
+  exit();
+}
+$edit_user_id = $_GET['id'];
+$authenticated_user_id = get_authenticated_user()['id'];
+$edit_user = get_user_by_id($edit_user_id);
+
+if (is_not_admin(get_authenticated_user()) && is_not_author($authenticated_user_id, $edit_user_id)) {
+  set_flash_message('danger', 'Можно редактировать только свой профиль!');
+  redirect_to('users.php');
+  exit();
+}
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Безопаность</title>
+    <title>Document</title>
     <meta name="description" content="Chartist.html">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
@@ -34,44 +52,55 @@
     <main id="js-page-content" role="main" class="page-content mt-3">
         <div class="subheader">
             <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-lock'></i> Безопасность
+                <i class='subheader-icon fal fa-plus-circle'></i> Редактировать
             </h1>
 
         </div>
-        <form action="">
+        <form action="edit_handler.php?id=<?php echo $_GET['id']; ?>" method = 'post'>
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
                         <div class="panel-container">
                             <div class="panel-hdr">
-                                <h2>Обновление эл. адреса и пароля</h2>
+                                <h2>Общая информация</h2>
                             </div>
                             <div class="panel-content">
-                                <!-- email -->
+                                <!-- username -->
                                 <div class="form-group">
-                                    <label class="form-label" for="simpleinput">Email</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="john@example.com">
+                                    <label class="form-label" for="simpleinput">Имя</label>
+                                    <input type="text" id="simpleinput" class="form-control" value="<?php echo $edit_user[
+                                      'username'
+                                    ]; ?>" name = 'username'>
                                 </div>
 
-                                <!-- password -->
+                                <!-- title -->
                                 <div class="form-group">
-                                    <label class="form-label" for="simpleinput">Пароль</label>
-                                    <input type="password" id="simpleinput" class="form-control">
+                                    <label class="form-label" for="simpleinput">Место работы</label>
+                                    <input type="text" id="simpleinput" class="form-control" value="<?php echo $edit_user[
+                                      'job_title'
+                                    ]; ?>" name = 'job_title'>
                                 </div>
 
-                                <!-- password confirmation-->
+                                <!-- tel -->
                                 <div class="form-group">
-                                    <label class="form-label" for="simpleinput">Подтверждение пароля</label>
-                                    <input type="password" id="simpleinput" class="form-control">
+                                    <label class="form-label" for="simpleinput">Номер телефона</label>
+                                    <input type="text" id="simpleinput" class="form-control" value="<?php echo $edit_user[
+                                      'phone'
+                                    ]; ?>" name = 'phone'>
                                 </div>
 
-
+                                <!-- address -->
+                                <div class="form-group">
+                                    <label class="form-label" for="simpleinput">Адрес</label>
+                                    <input type="text" id="simpleinput" class="form-control" value="<?php echo $edit_user[
+                                      'address'
+                                    ]; ?>" name = 'address'>
+                                </div>
                                 <div class="col-md-12 mt-3 d-flex flex-row-reverse">
-                                    <button class="btn btn-warning">Изменить</button>
+                                    <button class="btn btn-warning" type = 'submit' >Редактировать</button>
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>

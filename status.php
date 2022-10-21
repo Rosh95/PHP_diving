@@ -1,3 +1,21 @@
+<?php
+session_start();
+require 'functions.php';
+
+if (is_not_logged_in()) {
+  redirect_to('page_login.php');
+  exit();
+}
+$edit_user_id = $_GET['id'];
+$authenticated_user_id = get_authenticated_user()['id'];
+$edit_user = get_user_by_id($edit_user_id);
+
+if (is_not_admin(get_authenticated_user()) && is_not_author($authenticated_user_id, $edit_user_id)) {
+  set_flash_message('danger', 'Можно редактировать только свой профиль!');
+  redirect_to('users.php');
+  exit();
+}
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +56,7 @@
             </h1>
 
         </div>
-        <form action="">
+        <form action="status_handler.php?id=<?php echo $_GET['id']; ?>" method = 'post'>
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -52,15 +70,20 @@
                                         <!-- status -->
                                         <div class="form-group">
                                             <label class="form-label" for="example-select">Выберите статус</label>
-                                            <select class="form-control" id="example-select">
-                                                <option>Онлайн</option>
-                                                <option>Отошел</option>
-                                                <option>Не беспокоить</option>
+                                            <select class="form-control" id="example-select" name = 'status'>                                           >
+                                               <?php foreach ($statuses as $status_key => $status_value): ?>
+                                                 
+                                            <?php if ($edit_user['status'] === $status_key): ?>
+                                            <option selected> <?php echo $status_value; ?></option>
+                                            <?php else: ?> 
+                                            <option><?php echo $status_value; ?></option>
+                                            <?php endif; ?>                                                
+                                            <?php endforeach; ?>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-12 mt-3 d-flex flex-row-reverse">
-                                        <button class="btn btn-warning">Set Status</button>
+                                        <button class="btn btn-warning" type = 'submit'>Set Status</button>
                                     </div>
                                 </div>
                             </div>

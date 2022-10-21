@@ -1,4 +1,4 @@
-<?php session_start() ?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,18 +34,20 @@
             </a>
         </div>
         <div class="card p-4 border-top-left-radius-0 border-top-right-radius-0">
-        <?php if(isset($_SESSION['success'])):?>
-        <div class="alert alert-success text-dark" role="alert"><?php echo $_SESSION['success'] ?> </div>
-        <?php unset($_SESSION['success']);?>
-        <?php endif;?> 
-            <form action="">
+        <?php
+        require 'functions.php';
+        display_flash_message('success');
+        display_flash_message('danger');
+        ?> 
+ 
+            <form action="page_login_handler.php" method = 'post'>
                 <div class="form-group">
                     <label class="form-label" for="username">Email</label>
-                    <input type="email" id="username" class="form-control" placeholder="Эл. адрес" value="">
+                    <input type="email" id="username" class="form-control" placeholder="Эл. адрес" value="" name = 'email'>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="password">Пароль</label>
-                    <input type="password" id="password" class="form-control" placeholder="" >
+                    <input type="password" id="password" class="form-control" placeholder="" name = 'password'>
                 </div>
                 <div class="form-group text-left">
                     <div class="custom-control custom-checkbox">
@@ -57,7 +59,7 @@
             </form>
         </div>
         <div class="blankpage-footer text-center">
-            Нет аккаунта? <a href="page_register.html"><strong>Зарегистрироваться</strong>
+            Нет аккаунта? <a href="page_register.php"><strong>Зарегистрироваться</strong>
         </div>
     </div>
     <video poster="img/backgrounds/clouds.png" id="bgvid" playsinline autoplay muted loop>

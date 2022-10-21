@@ -39,7 +39,7 @@
                         <span class="text-white opacity-50 ml-auto mr-2 hidden-sm-down">
                             Уже зарегистрированы?
                         </span>
-                        <a href="page_login.html" class="btn-link text-white ml-auto ml-sm-0">
+                        <a href="page_login.php" class="btn-link text-white ml-auto ml-sm-0">
                             Войти
                         </a>
                     </div>
@@ -60,10 +60,10 @@
                             </div>
                             <div class="col-xl-6 ml-auto mr-auto">
                                 <div class="card p-4 rounded-plus bg-faded">
-                                    <?php if(isset($_SESSION['error'])):?>
-                                        <div class="alert alert-danger text-dark" role="alert"><strong>Уведомление! </strong><?php echo $_SESSION['error'] ?> </div>
-                                    <?php unset($_SESSION['error']);?>
-                                    <?php endif;   ?>
+                                    <?php
+                                    require 'functions.php';
+                                    display_flash_message('danger');
+                                    ?>
                                     <form id="js-login" novalidate="" action="page_register_handler.php" method = 'post'>
                                         <div class="form-group">
                                             <label class="form-label" for="emailverify">Email</label>

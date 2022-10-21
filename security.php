@@ -1,8 +1,26 @@
+<?php
+session_start();
+require 'functions.php';
+
+if (is_not_logged_in()) {
+  redirect_to('page_login.php');
+  exit();
+}
+$edit_user_id = $_GET['id'];
+$authenticated_user_id = get_authenticated_user()['id'];
+$edit_user = get_user_by_id($edit_user_id);
+
+if (is_not_admin(get_authenticated_user()) && is_not_author($authenticated_user_id, $edit_user_id)) {
+  set_flash_message('danger', 'Можно редактировать только свой профиль!');
+  redirect_to('users.php');
+  exit();
+}
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Безопаность</title>
     <meta name="description" content="Chartist.html">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
@@ -23,7 +41,7 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.html">Войти</a>
+                    <a class="nav-link" href="page_login.php">Войти</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Выйти</a>
@@ -34,47 +52,46 @@
     <main id="js-page-content" role="main" class="page-content mt-3">
         <div class="subheader">
             <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-plus-circle'></i> Редактировать
+                <i class='subheader-icon fal fa-lock'></i> Безопасность
             </h1>
 
         </div>
-        <form action="">
+        <form action="security_handler.php?id=<?php echo $_GET['id']; ?>" method = 'post'>
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
                         <div class="panel-container">
                             <div class="panel-hdr">
-                                <h2>Общая информация</h2>
+                                <h2>Обновление эл. адреса и пароля</h2>
                             </div>
                             <div class="panel-content">
-                                <!-- username -->
+                                <!-- email -->
                                 <div class="form-group">
-                                    <label class="form-label" for="simpleinput">Имя</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Иван иванов">
+                                    <label class="form-label" for="simpleinput">Email</label>
+                                    <input type="text" id="simpleinput" class="form-control" value="<?php echo $edit_user[
+                                      'email'
+                                    ]; ?>" name = 'email'>
                                 </div>
 
-                                <!-- title -->
+                                <!-- password -->
                                 <div class="form-group">
-                                    <label class="form-label" for="simpleinput">Место работы</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Marlin Веб-разработчик">
+                                    <label class="form-label" for="simpleinput">Пароль</label>
+                                    <input type="password" id="simpleinput" class="form-control" name = 'password'>
                                 </div>
 
-                                <!-- tel -->
+                                <!-- password confirmation-->
                                 <div class="form-group">
-                                    <label class="form-label" for="simpleinput">Номер телефона</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="8 888 8888 88">
+                                    <label class="form-label" for="simpleinput">Подтверждение пароля</label>
+                                    <input type="password" id="simpleinput" class="form-control">
                                 </div>
 
-                                <!-- address -->
-                                <div class="form-group">
-                                    <label class="form-label" for="simpleinput">Адрес</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Восточные Королевства, Штормград">
-                                </div>
+
                                 <div class="col-md-12 mt-3 d-flex flex-row-reverse">
-                                    <button class="btn btn-warning">Редактировать</button>
+                                    <button class="btn btn-warning">Изменить</button>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
